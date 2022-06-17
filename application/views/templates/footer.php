@@ -16,7 +16,7 @@
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
+    <a class="scroll-to-top rounded" href="#page-top" >
         <i class="fas fa-angle-up"></i>
     </a>
 
@@ -70,6 +70,7 @@
     <script src="//cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
 
     <script type="text/javascript">
+
         const flashData = $('.flash-data').data('flashdata');
         const shuttle = $('.shuttle').data('shuttle');
         const objek = $('.flash-data').data('objek');

@@ -1,9 +1,16 @@
         <!-- Begin Page Content -->
                 <div class="container-fluid">
-
+                <?php 
+                        // var_dump($kelas);
+                        // var_dump($asal_mhs); 
+                        // echo json_encode($asal_mhs);
+                        // var_dump((base_url('assets/geojson/12.geojson')));
+                        // var_dump($pekerjaan_wali);
+                        ?>
+                <?php //var_dump((int)$kelas[0]['id']);var_dump($nilai_ipk[0][1]);var_dump($nilai_ipk) ?>
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800"><?=$title ?></h1>
+                        <h1 class="h3 mb-0 text-gray-800"><?=$title;//var_dump($pekerjaan_wali); ?></h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i>&nbsp;Generate Report</a>
                     </div>
@@ -67,7 +74,7 @@
                     <!-- Content Row Info Mahasiswa -->
                     <div class="row">
                       <div class="col-xl-6 col-md-12">
-                        <div class="card shadow mb-4" style="height: 31rem;">
+                        <div class="card shadow mb-4" style="height: 32rem;">
                           <!-- Card Header - Dropdown -->
                           <div class="card-header d-flex flex-row align-items-center justify-content-between">
                             <h6 class="m-0 font-weight-bold text-primary">INFO MAHASISWA</h6>
@@ -89,149 +96,60 @@
                           </div>
                           <!-- Card Body -->
                           <div class="card-body">
-                            <form action="" method="get">
+                            <form action="<?= base_url('Dosen/index') ?>" method="get">
                             <div class="row">
                               <div class="col-md-6">
                                 <div class="input-group mb-3">
-                                  <input type="text" class="form-control" placeholder="Cari Keyword..." aria-label="Nama Lengkap" aria-describedby="button-addon2">
+                                  <input type="text" class="form-control" placeholder="Cari Nama..." aria-label="Cari Keyword" aria-describedby="button-addon2" name="keyword-info">
                                   <div class="input-group-append">
-                                    <button class="btn btn-info" type="button" id="button-addon2">Cari</button>
+                                    <input type="submit" name="submit-info" class="form-control btn btn-info" aria-label="Submit" aria-describedby="basic-addon1">
+                                    <!-- <button class="btn btn-info" type="submit" id="button-addon2" name="submit-info">Cari</button> -->
                                   </div>
                                 </div>
                               </div>
                             </div>
                             </form>
-                            <table class="table tab-striped table-hover">
-                              <thead class="thead-dark">
-                                <tr>
-                                  <th>NAMA LENGKAP</th>
-                                  <th>TAK</th>
-                                  <th>SKS</th>
-                                  <th>IPK</th>
-                                  <th>STATUS PA</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <?php foreach ($info_mahasiswa as $info) : ?>
-                                <tr>
-                                  <td><?= $info['name']; ?></td>
-                                  <td><?= $info['tak']; ?></td>
-                                  <td>data invalid</td>
-                                  <td><?= $info['ipk']; ?></td>
-                                  <td>data invalid</td>
-                                </tr>
-                                <?php endforeach; ?>
-                              </tbody>
-                            </table>
-                            <!-- Pagination -->
-                            <?php // echo $this->pagination->create_links(); ?>
-                            <nav aria-label="Page navigation example">
-                              <ul class="pagination justify-content-center">
-                                <li class="page-item">
-                                  <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                  </a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                  <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                  </a>
-                                </li>
-                              </ul>
-                            </nav>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-xl-6 col-md-12">
-                        <div class="card shadow mb-4" style="height: 31rem;">
-                          <!-- Card Header - Dropdown -->
-                          <div class="card-header d-flex flex-row align-items-center justify-content-between">
-                              <h6 class="m-0 font-weight-bold text-primary">STATUS MAHASISWA</h6>
-                              <div class="dropdown no-arrow">
-                                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                  </a>
-                                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                      aria-labelledby="dropdownMenuLink">
-                                      <div class="dropdown-header">Dropdown Header:</div>
-                                      <a class="dropdown-item" href="#">Action</a>
-                                      <a class="dropdown-item" href="#">Another action</a>
-                                      <div class="dropdown-divider"></div>
-                                      <a class="dropdown-item" href="#">Something else here</a>
-                                  </div>
-                              </div>
-                          </div>
-                          <!-- Card Body -->
-                          <div class="card-body">
-                              <div class="chart-pie mt-5 pb-4">
-                                  <canvas id="statusChart"></canvas>
-                              </div>
-                              <div class="mt-4 text-center small">
-                                  <?php $a = 0; ?>
-                                  <?php foreach ($status as $row): ?>
-                                      <?php $warna = ""; 
-                                      $nilai = "1234567890abcdef";
-                                          for($i = 0;$i <6;$i++){
-                                              $warna .= $nilai[rand(0,strlen($nilai) - 1)];
-                                          }
-                                          $color_status[$a] = $warna;
-                                          $a++;
-                                           ?>
-                                      <span>
-                                          <i class="fas fa-circle mr-1" style="color: <?= '#'.$warna ?>;"></i><?= $row['status'].' '.number_format(($row['count_status']*100/$count_status['count_status'])).'%' ?>
-                                      </span>
-                                  <?php endforeach ?>
-                              </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Content Row Jumlah Penerima Beasiswa -->
-                    <div class="row">
-                      <div class="col-xl-6 col-md-12">
-                        <div class="card shadow mb-4" style="height: 31rem;">
-                        <!-- Card Header - Dropdown -->
-                          <div class="card-header d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">JUMLAH PENERIMA BEASISWA</h6>
-                            <!-- Dropdown menu -->
-                            <div class="dropdown no-arrow">
-                              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                              </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                    aria-labelledby="dropdownMenuLink">
-                                    <div class="dropdown-header">Dropdown Header:</div>
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
+                            
+                            <div class="tableFixHead">
+                              <table class="table tab-striped table-hover tableFix">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th>NO</th>
+                                    <th>NAMA LENGKAP</th>
+                                    <th>TAK</th>
+                                    <th>SKS</th>
+                                    <th>IPK</th>
+                                    <th>STATUS PA</th>
+                                  </tr>
+                                </thead>
+                                <tbody> 
+                                  <?php 
+                                  $x = 1;
+                                  foreach ($info_mahasiswa as $info) : ?>
+                                  <tr>
+                                    <td><?= $x++; ?></td>
+                                    <td><?= $info['name']; ?></td>
+                                    <td><?= $info['tak']; ?></td>
+                                    <td>data invalid</td>
+                                    <td><?= $info['ipk']; ?></td>
+                                    <td>data invalid</td>
+                                  </tr>
+                                  <?php endforeach; ?>
+                                </tbody>
+                              </table>
                             </div>
-                          </div>
-                           <!-- Card Body -->
-                          <div class="card-body">
-
+                            <span style="font-size: 14px;">
+                              Total Number of Columns <?= $count_info; ?>
+                            </span>
                           </div>
                         </div>
                       </div>
-                    </div>
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
+                      <!-- Area Chart Rata-Rata IPK Semester -->
+                      <div class="col-xl-6 col-md-12">
+                            <div class="card shadow mb-4" style="height: 32rem;">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Rata-rata IPK Per Semester</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">RATA-RATA IPK PER SEMESTER</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -255,9 +173,105 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Content Row Daerah Asal Mahasiswa -->
+                    <div class="row">
+                      <div class="col-xl-6 col-md-12">
+                        <div class="card shadow mb-4" style="height: 32rem;">
+                          <!-- Card Header - Dropdown -->
+                          <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                              <h6 class="m-0 font-weight-bold text-primary">DAERAH ASAL MAHASISWA</h6>
+                              <div class="dropdown no-arrow">
+                                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                      aria-labelledby="dropdownMenuLink">
+                                      <div class="dropdown-header">Dropdown Header:</div>
+                                      <a class="dropdown-item" href="#">Action</a>
+                                      <a class="dropdown-item" href="#">Another action</a>
+                                      <div class="dropdown-divider"></div>
+                                      <a class="dropdown-item" href="#">Something else here</a>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- Card Body -->
+                          <div class="card-body">
+                            <div id="map" style="height: 90%; width: 100%"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-xl-6 col-md-12">
+                        <div class="card shadow mb-4" style="height: 32rem;">
+                        <!-- Card Header - Dropdown -->
+                          <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary float-left">PRESENSI MAHASISWA</h6>
+                            <!-- Dropdown Matkul -->
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                MATKUL
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                              </div>
+                            </div>
+                          </div>
+                           <!-- Card Body -->
+                          <div class="card-body">
+                          <form action="<?= base_url('Dosen/index') ?>" method="get">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="input-group mb-3">
+                                  <input type="text" class="form-control" placeholder="Cari Nama..." aria-label="Cari Keyword" aria-describedby="button-addon2" name="keyword-presensi">
+                                  <div class="input-group-append">
+                                    <input type="submit" name="submit-presensi" class="form-control btn btn-info" aria-label="Submit" aria-describedby="basic-addon1">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            </form>
+                            <div class="tableFixHead">
+                              <table class="table tab-striped table-hover tableFix">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th>NO</th>
+                                    <th>NAMA LENGKAP</th>
+                                    <!-- <th>JUMLAH KEHADIRAN</th> -->
+                                    <th>PERSENTASE</th>
+                                  </tr>
+                                </thead>
+                                <tbody> 
+                                  <?php
+                                  $x = 1;
+                                  foreach ($presensi_mahasiswa as $p) : ?>
+                                  <tr>
+                                    <td><?= $x++; ?></td>
+                                    <td><?= $p['name']; ?></td>
+                                    <td><?= $p['avg_presensi']." %";?></td>
+                                  </tr>
+                                  <?php endforeach; ?>
+                                </tbody>
+                              </table>
+                            </div>
+                            <span style="font-size: 14px;">
+                              Total Number of Columns <?= $count_presensi; ?>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Content Row -->
+
+                    <div class="row">
 
                         <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
+                        <div class="col-xl-12 col-lg-12">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -286,16 +300,13 @@
                                         <?php $a = 0; ?>
                                         <?php foreach ($pekerjaan_wali as $row): ?>
                                             <?php $warna = ""; 
-                                            $nilai = "1234567890abcdef";
+                                                $nilai = "1234567890abcdef";
                                                 for($i = 0;$i <6;$i++){
                                                     $warna .= $nilai[rand(0,strlen($nilai) - 1)];
                                                 }
                                                 $color_pekerjaan[$a] = $warna;
                                                 $a++;
-                                                 ?>
-                                            <span class="mr-2">
-                                                <i class="fas fa-circle" style="color: <?= '#'.$warna ?>;"></i><?= $row['pekerjaan_wali'].' '.number_format(($row['count_pekerjaan']*100/$count_pekerjaan['count_pekerjaan'])).' %'; ?>
-                                            </span>
+                                            ?>
                                         <?php endforeach ?>
                                     </div>
                                 </div>
@@ -303,180 +314,101 @@
                         </div>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Pendidikan Terakhir Orang Tua</h6>
-                                </div>
-                                <div class="card-body">
-                                    <?php 
-                                    foreach ($pendidikan_wali as $row) { ?>
-                                        <?php
-                                        $persentase_pendidikan =  number_format($row['count_pendidikan']*100/$count_pendidikan['count_pendidikan'])?>
-                                        <h4 class="small font-weight-bold"><?= $row['pendidikan'] ?><span class="float-right"><?= $persentase_pendidikan ?>%</span></h4>
-                                        <div class="progress mb-4">
-                                            <?php switch ($row['pid']) {
-                                                case 1: $color = "danger"; break;
-                                                case 2: $color = "warning"; break;
-                                                case 3: $color = "dark"; break;
-                                                case 4: $color = "success"; break;
-                                                case 5: $color = "info"; break;
-                                                case 6: $color = "secondary"; break;
-                                                case 7: $color = "primary"; break;
-                                                case 8: $color = "danger"; break;
-                                                case 9: $color = "dark"; break;
-                                                default: $color = "secondary"; break;
-                                            } ?>
-                                            <div class="progress-bar bg-<?=$color ?>  " role="progressbar" style="width: <?= $persentase_pendidikan ?>%"
-                                                aria-valuenow="<?= $persentase_pendidikan ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <?php
-                                    }
-                                     ?>
-                                </div>
-                            </div>
-
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Rata-rata Kehadiran Per Semester</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="presensiChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Daerah Asal Mahasiswa</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="asalChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <?php $a = 0; ?>
-                                        <?php foreach ($asal_daerah as $row): ?>
-                                            <?php $warna = ""; 
-                                            $nilai = "1234567890abcdef";
-                                                for($i = 0;$i <6;$i++){
-                                                    $warna .= $nilai[rand(0,strlen($nilai) - 1)];
-                                                }
-                                                $color_asal[$a] = $warna;
-                                                $a++;
-                                                 ?>
-                                            <span class="mr-2">
-                                                <i class="fas fa-circle" style="color: <?= '#'.$warna ?>;"></i><?= $row['asal_daerah'].' '.number_format(($row['count_asal']*100/$count_asal['count_asal'])).' %'; ?>
-                                            </span>
-                                        <?php endforeach ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Illustrations -->
-                            <div class="card shadow mb-4">
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Rata-rata TAK Per Semester</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="takChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- TAK Chart -->
-                            <!-- <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="<?= base_url('assets/') ?>img/undraw_posting_photo.svg" alt="">
-                                    </div>
-                                    <?= $konten1['content'] ?>
-                                </div>
-                            </div> -->
-
-                            <!-- Approach -->
-                         <!--    <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div class="card-body">
-                                    <?= $konten2['content'] ?>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div> -->
                 <!-- /.container-fluid -->
 
             </div>
             <!-- End of Main Content -->
             <!-- Page level plugins -->
             <script src="<?= base_url('assets/') ?>vendor/chart.js/Chart.min.js"></script>
+            <!-- Plugins jquery -->
+            <script src="<?= base_url('assets/') ?>vendor/jquery/jquery.min.js"></script>
+            <!-- Plugins leaflet -->
+            <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.5/umd/popper.min.js" integrity="sha512-8cU710tp3iH9RniUh6fq5zJsGnjLzOWLWdZqBMLtqaoZUA6AWIE34lwMB3ipUNiTBP5jEZKY95SfbNnQ8cCKvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+              integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+              crossorigin=""></script>
+            <script src="<?=base_url();?>assets/leafletajax/leaflet.ajax.js"></script>
 
-            <script type="text/javascript">
+            <script text="text/javascript">
+              // fungsi mendapatkan kode warna
+              function getColorCode() {
+                  var makeColorCode = '0123456789ABCDEF';
+                  var code = '#';
+                  for (var count = 0; count < 6; count++) {
+                    code =code+ makeColorCode[Math.floor(Math.random() * 16)];
+                  }
+                  return code;
+              }
+
+              // CHOROPLETH MAP
+              // var map =   L.map("map").setView([-3.824181, 117.8191513],4); // MAP INDO
+              var map =   L.map("map").setView([-3.824181, 117.8191513],4); // MAP CONTOH
+              // API Open Street Map
+              var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              }).addTo(map);
+              //// API Mapbox
+              // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVyZGlhbnJpY28iLCJhIjoiY2wwYWdxNW1wMGFyZzNqcXNuOGIyeXJkYiJ9.xm2zSFH4a2b7ECe8l9gI1A', {
+              //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+              //     maxZoom: 18,
+              //     id: 'mapbox/streets-v11',
+              //     tileSize: 512,
+              //     zoomOffset: -1
+              // }).addTo(map);
+              var dataAsal = <?php echo json_encode($asal_mhs);?>;
+              var api = 'https://gist.githubusercontent.com/muhammadyana/ac3bed71e8a4d1d4aa5459cc9e4be323/raw/18ccf61ca9d6d7a4a84378de6119fa81f4077848/indonesia-map-geojson.json';
+              var dataDaerah = [];
+              var geojson = [];
+              // getData();
+              // console.log(api);
+              const asal_mahasiswa = <?= json_encode($asal_mhs)?>;
+              console.log(asal_mahasiswa);
+
+              const style_map = [];
+              for (let x = 0; x < asal_mahasiswa.length; x++) {
+                style_map.push(
+                  {
+                    "color": getColorCode(),
+                    "weight": 1.5,
+                    "opacity": 0.9
+                  }
+                )
+              };
+              console.log(style_map);
+              function popUp(f,l){
+                var out = [];
+                if (f.properties){
+                    for (let x = 0; x < asal_mahasiswa.length; x++) {
+                      if (f.properties['KODE'] == asal_mahasiswa[x]['kode']) {
+                        jumlah = asal_mahasiswa[x]['kode'];
+                        var popUp='<table>'+
+                                    '<tr>'+
+                                      '<td colspan="4"><h6>'+f.properties['NAME_1']+'</h6></td>'+
+                                    '</tr>'+
+                                    '<tr>'+
+                                      '<td>Kode</td>'+
+                                      '<td> : '+f.properties['KODE']+'</td>'+
+                                    '</tr>'+
+                                    '<tr>'+
+                                      '<td>Mahasiswa</td>'+
+                                      '<td> : '+asal_mahasiswa[x]['jml_prov']+' Orang</td>'+
+                                    '</tr>'+
+                                    '</table>'
+                        ;
+                        l.bindPopup(popUp);
+                        break;
+                      }
+                    }
+                } 
+              };
+              for (let x = 0; x < asal_mahasiswa.length; x++) {
+                var jsonTest = new L.GeoJSON.AJAX([<?= json_encode(base_url())?>+'assets/geojson/'+asal_mahasiswa[x]['kode']+'.geojson'],{onEachFeature:popUp, style:style_map[x]}).addTo(map);
+              };
+              
+              // AKHIR CHOROPLETH MAP
+              
                 // Set new default font family and font color to mimic Bootstrap's default styling
                 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
                 Chart.defaults.global.defaultFontColor = '#858796';
@@ -506,8 +438,11 @@
                   return s.join(dec);
                 }
 
-                // Area Chart Example
-                var ctx = document.getElementById("ipkChart");
+          // AWAL Chart IPK
+          <?php
+                if (isset($cur_kelas)) {?>
+                  // console.log("undefined");
+                  var ctx = document.getElementById("ipkChart");
                 var myLineChart = new Chart(ctx, {
                   type: 'line',
                   data: {
@@ -517,7 +452,7 @@
                         } 
                      ?>],
                     datasets: [{
-                      label: "Rata-rata IPK",
+                      label: <?php echo json_encode($cur_kelas['kelas']);?>,
                       lineTension: 0.3,
                       backgroundColor: "rgba(78, 115, 223, 0.05)",
                       borderColor: "rgba(78, 115, 223, 1)",
@@ -537,7 +472,6 @@
                     }],
                   },
                   options: {
-                    maintainAspectRatio: false,
                     layout: {
                       padding: {
                         left: 10,
@@ -580,9 +514,10 @@
                       }],
                     },
                     legend: {
-                      display: false
+                      display: true
                     },
                     tooltips: {
+                      enabled: true,
                       backgroundColor: "rgb(255,255,255)",
                       bodyFontColor: "#858796",
                       titleMarginBottom: 10,
@@ -599,204 +534,88 @@
                       callbacks: {
                         label: function(tooltipItem, chart) {
                           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                          return datasetLabel + ': ' + tooltipItem.yLabel;
+                          return datasetLabel + ' = ' + tooltipItem.yLabel;
                         }
                       }
                     }
                   }
                 });
-
-                // Bar Chart Example
-                var ctx = document.getElementById("takChart");
-                var myBarChart = new Chart(ctx, {
-                  type: 'bar',
-                  data: {
-                    labels: [
-                    <?php $n = 1; ?>
-                    <?php $smt = ""; ?>
-                    <?php foreach ($hitung_tak as $vms){
-                        switch ($vms['semester_kelas']) {
-                            case 1: $smt = "Semester I"; break;
-                            case 2: $smt = "Semester II"; break;
-                            case 3: $smt = "Semester III"; break;
-                            case 4: $smt = "Semester IV"; break;
-                            case 5: $smt = "Semester V"; break;
-                            case 6: $smt = "Semester VI"; break;
-                            default: $smt = ''; break;
-                        }
-                        echo "'".$smt." ".$vms['jml_mhs']." Mahasiswa', ";
-                        $n++;
-                    } ?>
-                    ],
-                    datasets: [{
-                      label: "Rata-rata TAK",
-                      backgroundColor: "#12c3c9",
-                      hoverBackgroundColor: "#2e59d9",
-                      borderColor: "#12c3c9",
-                      data: [<?php
-                      foreach ($hitung_tak as $key) {
-                          echo $key['avg_tak'].", ";
-                      }
-                      ?>],
-                    }],
-                  },
-                  options: {
-                    maintainAspectRatio: false,
-                    layout: {
-                      padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                      }
-                    },
-                    scales: {
-                      xAxes: [{
-                        time: {
-                          unit: 'month'
-                        },
-                        gridLines: {
-                          display: false,
-                          drawBorder: false
-                        },
-                        ticks: {
-                          maxTicksLimit: 6
-                        },
-                        maxBarThickness: 25,
-                      }],
-                      yAxes: [{
-                        ticks: {
-                          beginAtZero:true,
-                          // Include a dollar sign in the ticks
-                          callback: function(value, index, values) {
-                            return number_format(value);
-                          }
-                        },
-                        gridLines: {
-                          color: "rgb(234, 236, 244)",
-                          zeroLineColor: "rgb(234, 236, 244)",
-                          drawBorder: false,
-                          borderDash: [2],
-                          zeroLineBorderDash: [2]
-                        }
-                      }],
-                    },
-                    legend: {
-                      display: false
-                    },
-                    tooltips: {
-                      titleMarginBottom: 10,
-                      titleFontColor: '#6e707e',
-                      titleFontSize: 14,
-                      backgroundColor: "rgb(255,255,255)",
-                      bodyFontColor: "#858796",
-                      borderColor: '#dddfeb',
-                      borderWidth: 1,
-                      xPadding: 15,
-                      yPadding: 15,
-                      displayColors: false,
-                      caretPadding: 10,
-                      callbacks: {
-                        label: function(tooltipItem, chart) {
-                          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                          return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
-                        }
-                      }
-                    },
+          <?php
+                }else{?>
+                  const jml_kelas = <?= json_encode($jml_kelas);?>;
+                  // Menyiapkan array untuk warna line
+                  const colorCode = [];
+                  for(let x=0; x < jml_kelas; x++){
+                    colorCode[x] = getColorCode();
                   }
-                });
+                  // menginisialisasi nilai ipk ke const dataku
+                  const dataku = <?= json_encode($nilai_ipk)?>;
+                  // console.log(dataku);
+                  // meyiapkan array dataset
+                  const dataset = [];
+                  // membuat custom dataset dan dimasukkan kedalam array dataset
+                  for (let x = 0; x < jml_kelas; x++) {
+                    if (dataku[x].length != 0){
+                      const data = [];
+                      for (let y = 0; y < 6; y++) {
+                        data.push(parseFloat(dataku[x][y]['ipk']).toFixed(2));
+                      }
+                      dataset.push(
+                        {
+                          label: dataku[x][0]['kelas'],
+                          backgroundColor: '#968ED000',
+                          borderColor: colorCode[x],
+                          data: data,
+                          tension: 0.4,
+                        }
+                      )
+                    }
+                  };
+                  console.log(dataset);
 
-                // Bar Chart Example
-                var ctx = document.getElementById("presensiChart");
-                var myBarChart = new Chart(ctx, {
-                  type: 'bar',
-                  data: {
-                    labels: ["Semester I", "Semester II", "Semester III", "Semester IV", "Semester V", "Semester VI"],
-                    datasets: [{
-                      label: "Rata-rata Kehadiran",
-                      backgroundColor: "#4e73df",
-                      hoverBackgroundColor: "#2e59d9",
-                      borderColor: "#4e73df",
-                      data: [<?php
-                      foreach ($value_mahasiswa_semester as $key) {
-                          echo ($key['avg_presensi']*100).", ";
-                      }
-                      ?>],
-                    }],
-                  },
-                  options: {
-                    maintainAspectRatio: false,
-                    layout: {
-                      padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                      }
-                    },
-                    scales: {
-                      xAxes: [{
-                        time: {
-                          unit: 'month'
-                        },
-                        gridLines: {
-                          display: false,
-                          drawBorder: false
-                        },
-                        ticks: {
-                          maxTicksLimit: 6
-                        },
-                        maxBarThickness: 25,
-                      }],
-                      yAxes: [{
-                        ticks: {
-                          max: 100,
-                          beginAtZero:true,
-                          // Include a dollar sign in the ticks
-                          callback: function(value, index, values) {
-                            return number_format(value) + '%';
+                  const labels = [
+                    'Semester 1',
+                    'Semester 2',
+                    'Semester 3',
+                    'Semester 4',
+                    'Semester 5',
+                    'Semester 6',
+                  ];
+                  // console.log(dataset);
+                  const data = {
+                    labels: labels,
+                    datasets: dataset
+                  };
+
+                  const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                      scales: {
+                        yAxes: [{
+                          ticks: {
+                            min: 0,
+                            max: 4
                           }
-                        },
-                        gridLines: {
-                          color: "rgb(234, 236, 244)",
-                          zeroLineColor: "rgb(234, 236, 244)",
-                          drawBorder: false,
-                          borderDash: [2],
-                          zeroLineBorderDash: [2]
-                        }
-                      }],
-                    },
-                    legend: {
-                      display: false
-                    },
-                    tooltips: {
-                      titleMarginBottom: 10,
-                      titleFontColor: '#6e707e',
-                      titleFontSize: 14,
-                      backgroundColor: "rgb(255,255,255)",
-                      bodyFontColor: "#858796",
-                      borderColor: '#dddfeb',
-                      borderWidth: 1,
-                      xPadding: 15,
-                      yPadding: 15,
-                      displayColors: false,
-                      caretPadding: 10,
-                      callbacks: {
-                        label: function(tooltipItem, chart) {
-                          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                          return datasetLabel + ': ' + number_format(tooltipItem.yLabel) + ' %';
-                        }
+                        }],
                       }
-                    },
-                  }
-                });
+                    }
+                  };
+
+                  var ctx = document.getElementById("ipkChart");
+                  var myLineChart = new Chart(ctx, config );
+
+          <?php }?>
+          // AKHIR CHART IPK
+          
+          // AWAL PEKERJAAN
                 var ctx = document.getElementById("pekerjaanChart");
                 var myPieChart = new Chart(ctx, {
-                  type: 'doughnut',
+                  type: 'bar',
                   data: {
                     labels: [<?php 
                         foreach ($pekerjaan_wali as $row) {
-                            echo "'".$row['pekerjaan_wali']."', ";
+                            echo "'".$row['jenis_pekerjaan']."', ";
                         }
                      ?>],
                     datasets: [{
@@ -807,7 +626,7 @@
                         ?>],
                       backgroundColor: [
                       <?php
-                            for($i = 0;$i < count($pekerjaan_wali);$i++){
+                            for($i = 0; $i < count($pekerjaan_wali);$i++){
                                 echo "'#".$color_pekerjaan[$i]."', ";
                             }?>],
                       hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -816,104 +635,44 @@
                   options: {
                     maintainAspectRatio: false,
                     tooltips: {
+                      enabled: true,
                       backgroundColor: "rgb(255,255,255)",
                       bodyFontColor: "#858796",
+                      titleMarginBottom: 10,
+                      titleFontColor: '#6e707e',
+                      titleFontSize: 14,
+                      bodyFontSize: 14,
                       borderColor: '#dddfeb',
                       borderWidth: 1,
                       xPadding: 15,
                       yPadding: 15,
                       displayColors: false,
+                      intersect: false,
+                      mode: 'index',
                       caretPadding: 10,
+                      callbacks: {
+                        label: function(tooltipItem, chart) {
+                          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                          return 'Jumlah : ' + tooltipItem.yLabel + " Orang";
+                        }
+                      }
                     },
                     legend: {
                       display: false
                     },
                     cutoutPercentage: 80,
+                    scales: {
+                        yAxes: [{
+                          ticks: {
+                            min: 0
+                          }
+                        }],
+                    }
                   },
                 });
-                // Pie Chart Example
-                var ctx = document.getElementById("asalChart");
-                var myPieChart = new Chart(ctx, {
-                  type: 'doughnut',
-                  data: {
-                    labels: [<?php 
-                        foreach ($asal_daerah as $row) {
-                            echo "'".$row['asal_daerah']."', ";
-                        }
-                     ?>],
-                    datasets: [{
-                      data: [<?php 
-                        foreach ($asal_daerah as $row) {
-                            echo ($row['count_asal']).', ';
-                        }
-                        ?>],
-                      backgroundColor: [<?php
-                            for($i = 0;$i < count($asal_daerah);$i++){
-                                echo "'#".$color_asal[$i]."', ";
-                            }?>],
-                      hoverBorderColor: "rgba(234, 236, 244, 1)",
-                    }],
-                  },
-                  options: {
-                    maintainAspectRatio: false,
-                    tooltips: {
-                      backgroundColor: "rgb(255,255,255)",
-                      bodyFontColor: "#858796",
-                      borderColor: '#dddfeb',
-                      borderWidth: 1,
-                      xPadding: 15,
-                      yPadding: 15,
-                      displayColors: false,
-                      caretPadding: 10,
-                    },
-                    legend: {
-                      display: false
-                    },
-                    cutoutPercentage: 80,
-                  },
-                });
+            // AKHIR PEKERJAAN 
 
-                var ctx = document.getElementById("statusChart");
-                var myPieChart = new Chart(ctx, {
-                  type: 'pie',
-                  data: {
-                    labels: [<?php 
-                        foreach ($status as $row) {
-                            echo "'".$row['status']."', ";
-                        }
-                     ?>],
-                    datasets: [{
-                      data: [<?php 
-                        foreach ($status as $row) {
-                            echo ($row['count_status']).', ';
-                        }
-                        ?>],
-                      backgroundColor: [<?php
-                            for($i = 0;$i < count($status);$i++){
-                                echo "'#".$color_status[$i]."', ";
-                            }?>],
-                      hoverBorderColor: "rgba(234, 236, 244, 1)",
-                    }],
-                  },
-                  options: {
-                    maintainAspectRatio: false,
-                    tooltips: {
-                      backgroundColor: "rgb(255,255,255)",
-                      bodyFontColor: "#858796",
-                      borderColor: '#dddfeb',
-                      borderWidth: 1,
-                      xPadding: 15,
-                      yPadding: 15,
-                      displayColors: false,
-                      caretPadding: 10,
-                    },
-                    legend: {
-                      display:false
-                    },
-                    cutoutPercentage: 80,
-                  },
-                });
-
+                
 
             </script>
             

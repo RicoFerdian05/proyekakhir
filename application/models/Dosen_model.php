@@ -42,7 +42,7 @@ class Dosen_model extends CI_Model {
 		$this->db->insert_batch('sub_nilai_mata_kuliah', $data);
 	}
 
-	public function getInfoMahasiswa($limit, $start, $id_kelas = null, $keyword = null){
+	public function getInfoMahasiswa($id_kelas = null, $keyword = null){
 		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 		$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array(); 
 
@@ -57,7 +57,7 @@ class Dosen_model extends CI_Model {
 		if ($id_kelas) {
 			$this->db->where('id_kelas', $id_kelas);
 		}
-		$this->db->limit($limit, $start);
+		$this->db->like('name', $keyword);
 
 		return $this->db->get()->result_array();
 	}
@@ -78,6 +78,70 @@ class Dosen_model extends CI_Model {
 			$this->db->where('id_kelas', $id_kelas);
 		}
 
+		$this->db->like('name', $keyword);
 		return $this->db->get()->num_rows();
+	}
+
+	public function getAsalDaerah($id_kelas = null){
+		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+		
+		$this->db->select('kode, COUNT("kode_prov") AS jml_prov');
+		$this->db->from('daerah');
+		$this->db->join('mahasiswa', 'daerah.kode = mahasiswa.kode_prov');
+		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+		if ($data['user']['role_id']!=1) {
+			$this->db->where('id_dosen_wali', $dosen['id']);
+		}
+		if ($id_kelas) {
+			$this->db->where('id_kelas', $id_kelas);
+		}
+		$this->db->group_by('kode');
+		
+		return $this->db->get()->result_array();
+		
+	}
+
+	public function getPresensi($id_kelas = null, $keyword = null, $id_pengampu = null){
+		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+		
+		$this->db->select('name, SUM(presensi) AS sum_presensi, COUNT(presensi) AS count_presensi, ROUND((SUM(presensi) / COUNT(presensi)), 2) AS avg_presensi');
+		$this->db->from('nilai_mata_kuliah');
+		$this->db->join('mahasiswa', 'nilai_mata_kuliah.id_nilai_mahasiswa = mahasiswa.id');
+		$this->db->join('user', 'mahasiswa.id_user = user.id');
+		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+		if ($data['user']['role_id']!=1) {
+			$this->db->where('id_dosen_wali', $dosen['id']);
+		}
+		if ($id_kelas) {
+			$this->db->where('id_kelas', $id_kelas);
+		}
+		$this->db->like('name', $keyword);
+		$this->db->group_by('id_nilai_mahasiswa');
+		
+
+		return $this->db->get()->result_array();
+	}
+
+	public function countPresensi($id_kelas = null, $keyword = null, $id_pengampu = null) {
+		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+		
+		$this->db->select('name, SUM(presensi) AS sum_presensi, COUNT(presensi) AS count_presensi, ROUND((SUM(presensi) / COUNT(presensi)), 2) AS avg_presensi');
+		$this->db->from('nilai_mata_kuliah');
+		$this->db->join('mahasiswa', 'nilai_mata_kuliah.id_nilai_mahasiswa = mahasiswa.id');
+		$this->db->join('user', 'mahasiswa.id_user = user.id');
+		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+		if ($data['user']['role_id']!=1) {
+			$this->db->where('id_dosen_wali', $dosen['id']);
+		}
+		if ($id_kelas) {
+			$this->db->where('id_kelas', $id_kelas);
+		}
+		$this->db->like('name', $keyword);
+		$this->db->group_by('id_nilai_mahasiswa');
+
+		return $this->db->get()->num_rows();	 
 	}
 }

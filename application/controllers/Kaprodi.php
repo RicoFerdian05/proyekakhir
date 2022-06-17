@@ -13,6 +13,7 @@ class Kaprodi extends CI_Controller {
 
 	public function index($tahun_ajaran = '', $semester = '', $angkatan = '')
 	{
+		$data['tahun_kuliah'] = $tahun_ajaran;
 		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 		$data['title'] = "Dashboard Kaprodi";
 
@@ -21,6 +22,12 @@ class Kaprodi extends CI_Controller {
 
 		$data['cur_tahun_ajaran'] = str_replace('_', ' / ', $tahun_ajaran);
 		$data['cur_semester'] = $semester;
+
+		// if ($tahun_ajaran == '') {
+		// 	$this->db->select
+		// }
+
+		
 
 		// $this->db->select("COUNT(DISTINCT(nilai_mahasiswa.id)) AS jml_mhs, AVG(tak) AS avg_tak, semester_kelas");
 		// $this->db->from('nilai_mahasiswa');
@@ -42,6 +49,7 @@ class Kaprodi extends CI_Controller {
 		}
 
 		if ($tahun_ajaran != '') {
+			
 			$tahun = str_replace('_', '/', $tahun_ajaran);
 			$this->db->select("COUNT(nilai_mahasiswa.id) AS jml_mhs, AVG(ipk) AS avg_ipk, AVG(tak) AS avg_tak, AVG(presensi) AS avg_presensi");
 			$this->db->from('nilai_mahasiswa');
@@ -316,6 +324,7 @@ class Kaprodi extends CI_Controller {
 		$this->db->select("COUNT(asal_daerah) AS count_asal");
 		$this->db->from('mahasiswa');
 		$data['count_asal'] = $this->db->get()->row_array();
+		
 		$this->db->select("COUNT(id_status) AS count_status");
 		$this->db->from('mahasiswa');
 		$data['count_status'] = $this->db->get()->row_array();

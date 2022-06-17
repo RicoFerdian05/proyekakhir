@@ -13,24 +13,58 @@ class Dosen extends CI_Controller {
 
 	public function index($id_kelas = null)
 	{
+		// MENGAMBIL DATA USER
 		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 		$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array(); 
 		$data['title'] = "Dashboard Dosen Wali";
 
-		// Pagination
-		// $this->load->library('pagination');
-		// // Config
-		// $config['base_url'] = 'http://localhost/PROYEK_AKHIR/dashboard/Dosen/index';
-		// $config['total_rows'] = $this->Dosen_model->countAllMahasiswa($id_kelas);
-		// $config['per_page'] = 6;
-		// $this->pagination->initialize($config);
+		// KUMPULAN KEYWORD SEARCH
+		$keyword_info = null;
+		$keyword_presensi = null;
 
-		// // Data Info Mahasiswa
-		// $data['start'] = $this->uri->segment(3);
-		$data['info_mahasiswa'] = $this->Dosen_model->getInfoMahasiswa(5, 0, $id_kelas);
+		if ($this->input->get('submit-info')){
+			$data['keyword-info'] = $this->input->get('keyword-info');
+			$keyword_info = $this->input->get('keyword-info');
+		}
+
+		if ($this->input->get('submit-presensi')){
+			$data['keyword-presensi'] = $this->input->get('keyword-presensi');
+			$keyword_presensi = $this->input->get('keyword-presensi');
+		}
+
+		$data['id_kelas'] = $id_kelas;
+		// CEK KELAS
+		if ($id_kelas) {
+			$data['cur_kelas'] = $this->db->get_where('kelas', ['id' => $id_kelas])->row_array();
+			$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+			$data['kelas'] = $this->db->get_where('kelas', ['id_dosen_wali' => $dosen['id']])->result_array();
+		} elseif ($data['user']['role_id'] == 4 || $data['user']['role_id'] == 5) {
+			$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+			$data['kelas'] = $this->db->get_where('kelas', ['id_dosen_wali' => $dosen['id']])->result_array();
+		}
+
+		// if ($data['user']['role_id'] == 4 || $data['user']['role_id'] == 5) {
+		// 	$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
+		// 	$data['kelas'] = $this->db->get_where('kelas', ['id_dosen_wali' => $dosen['id']])->result_array();
+		// } else {
+		// 	$data['kelas'] = $this->db->get('kelas')->result_array();
+		// }
+
+		// INFO MAHASISWA
+		$data['info_mahasiswa'] = $this->Dosen_model->getInfoMahasiswa($id_kelas, $keyword_info);
+		// JUMLAH ROWS
+		$data['count_info'] = $this->Dosen_model->countAllMahasiswa($id_kelas, $keyword_info);		
+
+		// ASAL DAERAH
+		$data['asal_mhs'] = $this->Dosen_model->getAsalDaerah($id_kelas);
+
+		//PRESENSI MAHASISWA
+		$data['presensi_mahasiswa'] = $this->Dosen_model->getPresensi($id_kelas, $keyword_presensi);
+		// JUMLAH ROWS
+		$data['count_presensi'] = $this->Dosen_model->countPresensi($id_kelas, $keyword_presensi);
 
 
-
+		// MENGHITUNG JUMLAH TAK
 		$this->db->select("COUNT(DISTINCT(id_nilai_mahasiswa)) AS jml_mhs, AVG(poin) AS avg_tak, semester AS semester_kelas");
 		$this->db->group_by('semester');
 		$data['hitung_tak'] = $this->db->get('tak')->result_array();
@@ -38,6 +72,8 @@ class Dosen extends CI_Controller {
 		// $data['konten1'] = $this->db->get_where('content', ['id' => 1])->row_array();
 		// $data['konten2'] = $this->db->get_where('content', ['id' => 2])->row_array();
 
+
+		// MENGHITUNG JUMLAH MAHASISWA
 		$this->db->select("COUNT(mahasiswa.id) AS jml_mhs");
 		$this->db->from('mahasiswa');
 		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
@@ -49,6 +85,7 @@ class Dosen extends CI_Controller {
 		}
 		$data['value_mahasiswa'] = $this->db->get()->row_array();
 
+		// MEANGHITUNG RATA-RATA IPK MAHASISWA
 		$this->db->select("AVG(ipk) AS avg_ipk, AVG(tak) AS avg_tak");
 		$this->db->from('nilai_mahasiswa');
 		$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
@@ -61,19 +98,22 @@ class Dosen extends CI_Controller {
 		}
 		$data['value_mahasiswa2'] = $this->db->get()->row_array();
 
-		$this->db->select("AVG(presensi) AS avg_presensi");
+		// MEDNGHITUNG RATA-RATA PRESENSI MAHASISWA
+		$this->db->select("AVG(presensi) AS avg_presensi, ");
 		$this->db->from('nilai_mata_kuliah');
 		$this->db->join('nilai_mahasiswa', 'nilai_mahasiswa.id=nilai_mata_kuliah.id_nilai_mahasiswa');
 		$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
 		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+		$this->db->join('user', 'user.id=mahasiswa.id_user');
 		if ($data['user']['role_id']!=1) {
 			$this->db->where('id_dosen_wali', $dosen['id']);
 		}
 		if ($id_kelas) {
 			$this->db->where('id_kelas', $id_kelas);
 		}
-		$data['value_mahasiswa3'] = $this->db->get()->row_array();
+		$data['presensi'] = $this->db->get()->result_array();
 
+		// MENGHITUNG JUMLAH MAHASISWA, RATA-RATA IPK, TAK, DAN PRESENSI
 		$this->db->select("COUNT(nilai_mahasiswa.id) AS jml_mhs, AVG(ipk) AS avg_ipk, AVG(tak) AS avg_tak, AVG(presensi) AS avg_presensi");
 		$this->db->from('nilai_mahasiswa');
 		$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
@@ -104,51 +144,79 @@ class Dosen extends CI_Controller {
 		// $this->db->group_by('kelas.semester_kelas');
 		// $data['hitung_tak'] = $this->db->get()->result_array();
 
-
-		$this->db->select("AVG(ip_semester.ipk) AS avg_ipk, AVG(ip) AS avg_ip");
-		$this->db->join('nilai_mahasiswa', 'nilai_mahasiswa.id=ip_semester.id_nilai_mahasiswa');
-		$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
-		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
-		$this->db->join('nilai_mata_kuliah', 'nilai_mahasiswa.id=nilai_mata_kuliah.id_nilai_mahasiswa');
-		$this->db->where('ip !=', 0);
-		if ($data['user']['role_id']!=1) {
-			$this->db->where('id_dosen_wali', $dosen['id']);
+		// MENGHITUNG RATA-RATA IPK DAN IP SEMESTER (TABLE NILAI_MAHASISWA DAN IP_SEMESTER)
+		// jika dipilih salah satu kelas
+		if($id_kelas != null){
+			$this->db->select("AVG(ip_semester.ipk) AS avg_ipk, AVG(ip) AS avg_ip");
+			$this->db->join('nilai_mahasiswa', 'nilai_mahasiswa.id=ip_semester.id_nilai_mahasiswa');
+			$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
+			$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+			$this->db->join('nilai_mata_kuliah', 'nilai_mahasiswa.id=nilai_mata_kuliah.id_nilai_mahasiswa');
+			$this->db->where('ip !=', 0);
+			if ($data['user']['role_id']!=1) {
+				$this->db->where('id_dosen_wali', $dosen['id']);
+			}
+			if ($id_kelas) {
+				$this->db->where('id_kelas', $id_kelas);
+			}
+			$this->db->group_by('ip_semester.semester');
+			$data['ip_ipk_mahasiswa_semester'] = $this->db->get('ip_semester')->result_array();
+			
+			// Mengambil nilai semester untuk label saja
+			$this->db->distinct();
+			$this->db->select("ip_semester.semester AS smt");
+			$this->db->join('nilai_mahasiswa', 'nilai_mahasiswa.id=ip_semester.id_nilai_mahasiswa');
+			$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
+			$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+			$this->db->join('nilai_mata_kuliah', 'nilai_mahasiswa.id=nilai_mata_kuliah.id_nilai_mahasiswa');
+			$this->db->where('ip !=', 0);
+			if ($data['user']['role_id']!=1) {
+				$this->db->where('id_dosen_wali', $dosen['id']);
+			}
+			if ($id_kelas) {
+				$this->db->where('id_kelas', $id_kelas);
+			}
+			$this->db->group_by('ip_semester.semester');
+			$data['distinct_semester_ip_ipk'] = $this->db->get('ip_semester')->result_array();
+		} 
+		// jika all class
+		else {
+			// mencari jumlah kelas dari dosen
+			$data['jml_kelas'] = count($data['kelas']);
+			// menyiapkan array tiap kelas
+			$rata_smt = array();
+			//memasukkan rata2 per semester di setiap array ke array
+			for($x=0 ; $x<$data['jml_kelas']; $x++){
+				$this->db->select("AVG(ip_semester.ipk) AS ipk, mahasiswa.id_kelas, ip_semester.semester, kelas.kelas");
+				$this->db->from("ip_semester");
+				$this->db->join("mahasiswa","ip_semester.id_nilai_mahasiswa = mahasiswa.id");
+				$this->db->join("kelas","mahasiswa.id_kelas = kelas.id");
+				$this->db->where("mahasiswa.id_kelas",(int)$data['kelas'][$x]['id']);
+				$this->db->group_by('ip_semester.semester');
+				array_push($rata_smt,$this->db->get()->result_array());
+			}
+			$data['nilai_ipk'] = $rata_smt;
 		}
-		if ($id_kelas) {
-			$this->db->where('id_kelas', $id_kelas);
-		}
-		$this->db->group_by('ip_semester.semester');
-		$data['ip_ipk_mahasiswa_semester'] = $this->db->get('ip_semester')->result_array();
 		
+	
+		// AKHIR RATA-RATA IPK
 
-		$this->db->distinct();
-		$this->db->select("ip_semester.semester AS smt");
-		$this->db->join('nilai_mahasiswa', 'nilai_mahasiswa.id=ip_semester.id_nilai_mahasiswa');
-		$this->db->join('mahasiswa', 'mahasiswa.id=nilai_mahasiswa.id_mahasiswa');
-		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
-		$this->db->join('nilai_mata_kuliah', 'nilai_mahasiswa.id=nilai_mata_kuliah.id_nilai_mahasiswa');
-		$this->db->where('ip !=', 0);
-		if ($data['user']['role_id']!=1) {
-			$this->db->where('id_dosen_wali', $dosen['id']);
-		}
-		if ($id_kelas) {
-			$this->db->where('id_kelas', $id_kelas);
-		}
-		$this->db->group_by('ip_semester.semester');
-		$data['distinct_semester_ip_ipk'] = $this->db->get('ip_semester')->result_array();
-		
 
-		$this->db->select("pekerjaan_wali, COUNT(pekerjaan_wali) AS count_pekerjaan");
+		// AWAL PEKERJAAN
+		$this->db->select("id_kerja, jenis_pekerjaan, COUNT(kelompok_pekerjaan) AS count_pekerjaan");
 		$this->db->from('mahasiswa');
 		$this->db->join('kelas', 'kelas.id=mahasiswa.id_kelas');
+		$this->db->join('kelompok_pekerjaan', 'mahasiswa.kelompok_pekerjaan=kelompok_pekerjaan.id_kerja');
 		if ($data['user']['role_id']!=1) {
 			$this->db->where('id_dosen_wali', $dosen['id']);
 		}
 		if ($id_kelas) {
 			$this->db->where('id_kelas', $id_kelas);
 		}
-		$this->db->group_by('pekerjaan_wali');
+		$this->db->group_by('kelompok_pekerjaan');
 		$data['pekerjaan_wali'] = $this->db->get()->result_array();
+		// AKHIR PEKERJAAN
+
 
 		$this->db->select("asal_daerah, COUNT(asal_daerah) AS count_asal");
 		$this->db->from('mahasiswa');
@@ -233,16 +301,7 @@ class Dosen extends CI_Controller {
 			$this->db->where('id_kelas', $id_kelas);
 		}
 		$data['count_status'] = $this->db->get()->row_array();
-		if ($id_kelas) {
-			$data['cur_kelas'] = $this->db->get_where('kelas', ['id' => $id_kelas])->row_array();
-		}
-
-		if ($data['user']['role_id'] == 4 || $data['user']['role_id'] == 5) {
-			$dosen = $this->db->get_where('dosen', ['id_user' => $data['user']['id']])->row_array();
-			$data['kelas'] = $this->db->get_where('kelas', ['id_dosen_wali' => $dosen['id']])->result_array();
-		} else {
-			$data['kelas'] = $this->db->get('kelas')->result_array();
-		}
+		
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar', $data);
